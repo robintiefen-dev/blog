@@ -1,11 +1,30 @@
 <!-- templates/home.html -->
  {% extends "base.html" %}
 
+ {% block title %}Home{% endblock title %}
+
  {% block content %}
- {% for post in post_list %}
-    <div class="post-entry">
-        <h2><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h2>
-        <p>{{ post.body }}</p>
-    </div>
- {% endfor %}
+ {% if user.is_authenticated %}
+ Hi {{ user.username }}! You are {{ user.userprofile.age }} years old.
+ <form action="{% url 'logout' %}" method="post">
+    {% csrf_token %}
+    <button type="submit">Log Out</button>
+ </form>
+ <br/>
+ <p><a class="btnn btn-primary" href="{% url 'article_list' %}" role="button">
+    View all articles</a></p>
+    {% else %}
+    <p>You are not logged in</p>
+    <a href="{% url 'login' %}">Log In</a> |
+    <a href="{% url 'signup' %}">Sign Up</a>
+    {% endif %}
+   
+      {% for post in post_list %}
+         <div class="post-entry">
+            <h2><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h2>
+            <p>{{ post.body }}</p>
+         </div>
+      {% endfor %}
+
  {% endblock content %}
+
